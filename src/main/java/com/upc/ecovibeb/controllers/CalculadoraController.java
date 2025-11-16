@@ -4,6 +4,7 @@ import com.upc.ecovibeb.dtos.CalculadoraPersonalDTO;
 import com.upc.ecovibeb.interfaces.ICalculadoraService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -15,6 +16,7 @@ public class CalculadoraController {
     private ICalculadoraService calculadoraService;
 
     @PostMapping("/calculadora")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<CalculadoraPersonalDTO> calcularPersonal(
             @RequestBody CalculadoraPersonalDTO request) {
 

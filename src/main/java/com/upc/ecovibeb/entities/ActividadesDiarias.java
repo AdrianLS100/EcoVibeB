@@ -1,5 +1,6 @@
 package com.upc.ecovibeb.entities;
 
+import com.upc.ecovibeb.security.entities.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;

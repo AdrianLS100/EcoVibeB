@@ -4,6 +4,7 @@ import com.upc.ecovibeb.dtos.ResiduoDTO;
 import com.upc.ecovibeb.interfaces.IResiduoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,18 +18,21 @@ public class ResiduoController {
     private IResiduoService residuoService;
 
     @PostMapping("/residuo")
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<ResiduoDTO> crear(@RequestBody ResiduoDTO dto) {
         ResiduoDTO creado = residuoService.crear(dto);
         return ResponseEntity.ok(creado);
     }
 
     @GetMapping("/por-actividadR/{actividadId}")
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<List<ResiduoDTO>> listarPorActividad(@PathVariable Long actividadId) {
         List<ResiduoDTO> lista = residuoService.listarPorActividad(actividadId);
         return ResponseEntity.ok(lista);
     }
 
     @DeleteMapping("/residuo/{id}")
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Void> eliminar(@PathVariable Long id) {
         residuoService.eliminar(id);
         return ResponseEntity.noContent().build();

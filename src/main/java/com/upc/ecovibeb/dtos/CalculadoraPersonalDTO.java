@@ -9,6 +9,8 @@ import java.util.List;
 @Setter
 public class CalculadoraPersonalDTO {
 
+    private Long usuarioId;
+
     private BigDecimal horasBusSemana;
     private BigDecimal horasTrenSemana;
     private BigDecimal horasMetropolitanoSemana;

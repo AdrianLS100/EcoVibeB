@@ -6,6 +6,7 @@ import com.upc.ecovibeb.interfaces.IRecursoEducativoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -17,6 +18,7 @@ public class RecursoEducativoController {
     private IRecursoEducativoService service;
 
     @GetMapping
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<Page<RecursoEducativoDTO>> listar(
             @RequestParam(required = false) Tipo tipo,
             @RequestParam(required = false) String q,

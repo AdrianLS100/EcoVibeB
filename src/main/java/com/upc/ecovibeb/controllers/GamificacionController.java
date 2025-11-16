@@ -6,6 +6,7 @@ import com.upc.ecovibeb.dtos.RecompensaDTO;
 import com.upc.ecovibeb.interfaces.IGamificacionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,16 +22,19 @@ public class GamificacionController {
     private IGamificacionService gamificacionService;
 
     @GetMapping("/recompensas")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<List<RecompensaDTO>> listarRecompensas() {
         return ResponseEntity.ok(gamificacionService.listarRecompensas());
     }
 
     @GetMapping("/estado/{usuarioId}")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<EstadoGamificacionDTO> getEstado(@PathVariable Long usuarioId) {
         return ResponseEntity.ok(gamificacionService.getEstadoUsuario(usuarioId));
     }
 
     @PostMapping("/canjear")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<EstadoGamificacionDTO> canjear(@RequestBody CanjearRequest request) {
         try {
             EstadoGamificacionDTO nuevoEstado = gamificacionService.canjearRecompensa(request);
@@ -41,6 +45,7 @@ public class GamificacionController {
     }
 
     @PostMapping("/otorgarPorActividad")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<EstadoGamificacionDTO> otorgarPorActividad(@RequestBody OtorgarPorActividadRequest request) {
         try {
             EstadoGamificacionDTO nuevoEstado = gamificacionService.analizarYOtorgarPuntos(

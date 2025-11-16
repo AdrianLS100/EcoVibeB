@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus; // <-- ¡Añade este import!
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -28,6 +29,7 @@ public class ActividadesDiariasController {
     ) {}
 
     @PostMapping("/crearactividad")
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> crearActividad(@RequestBody CrearActividadRequest req) {
         try {
             ActividadesDiariasDTO dto = actividadesService.crearActividad(
@@ -48,12 +50,14 @@ public class ActividadesDiariasController {
     }
 
     @GetMapping("/{actividadId}")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<ActividadesDiariasDTO> obtenerPorId(@PathVariable Long actividadId) {
         Optional<ActividadesDiariasDTO> dto = actividadesService.obtenerPorId(actividadId);
         return dto.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{actividadId}")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<Void> eliminar(@PathVariable Long actividadId) {
         actividadesService.eliminar(actividadId);
         return ResponseEntity.noContent().build();

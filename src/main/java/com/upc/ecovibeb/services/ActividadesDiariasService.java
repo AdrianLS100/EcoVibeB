@@ -2,16 +2,16 @@ package com.upc.ecovibeb.services;
 
 import com.upc.ecovibeb.dtos.ActividadesDiariasDTO;
 import com.upc.ecovibeb.entities.ActividadesDiarias;
-import com.upc.ecovibeb.entities.User; // <-- Asegúrate de importar tu entidad User
 import com.upc.ecovibeb.interfaces.IActividadesDiariasService;
 import com.upc.ecovibeb.repositories.ActividadesDiariasRepository;
-import com.upc.ecovibeb.repositories.UserRepository; // <-- Asegúrate de importar tu UserRepository
+import com.upc.ecovibeb.security.entities.User;
+import com.upc.ecovibeb.security.repositories.UserRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.NoSuchElementException; // <-- Importar
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -20,7 +20,7 @@ public class ActividadesDiariasService implements IActividadesDiariasService {
     @Autowired
     private ActividadesDiariasRepository actividadesRepo;
     @Autowired
-    private UserRepository userRepo; // (Necesario para buscar el usuario)
+    private UserRepository userRepo;
     @Autowired
     private ModelMapper modelMapper;
 

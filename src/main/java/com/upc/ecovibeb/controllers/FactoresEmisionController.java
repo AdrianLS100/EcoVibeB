@@ -4,6 +4,7 @@ import com.upc.ecovibeb.dtos.FactoresEmisionDTO;
 import com.upc.ecovibeb.interfaces.IFactoresEmisionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,6 +20,7 @@ public class FactoresEmisionController {
     public record BuscarFactorRequest(String categoria, String subcategoria, String unidadBase) {}
 
     @PostMapping("/buscar")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<FactoresEmisionDTO> buscarVigente(@RequestBody BuscarFactorRequest request) {
         return factoresService.buscarVigente(request.categoria(), request.subcategoria(), request.unidadBase())
                 .map(ResponseEntity::ok)
@@ -27,16 +29,19 @@ public class FactoresEmisionController {
 
 
     @PostMapping
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<FactoresEmisionDTO> crear(@RequestBody FactoresEmisionDTO dto) {
         return ResponseEntity.ok(factoresService.crear(dto));
     }
 
     @GetMapping
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<List<FactoresEmisionDTO>> listar() {
         return ResponseEntity.ok(factoresService.listar());
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<FactoresEmisionDTO> obtenerPorId(@PathVariable Long id) {
         return factoresService.obtener(id)
                 .map(ResponseEntity::ok)
@@ -44,11 +49,13 @@ public class FactoresEmisionController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<FactoresEmisionDTO> actualizar(@PathVariable Long id, @RequestBody FactoresEmisionDTO dto) {
         return ResponseEntity.ok(factoresService.actualizar(id, dto));
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<Void> eliminar(@PathVariable Long id) {
         factoresService.eliminar(id);
         return ResponseEntity.noContent().build();

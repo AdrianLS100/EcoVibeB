@@ -3,8 +3,11 @@ package com.upc.ecovibeb.services;
 import com.upc.ecovibeb.dtos.*;
 import com.upc.ecovibeb.entities.HistorialPuntos;
 import com.upc.ecovibeb.interfaces.IGamificacionService;
+import com.upc.ecovibeb.interfaces.INotificacionService;
 import com.upc.ecovibeb.interfaces.IReporteService;
 import com.upc.ecovibeb.repositories.HistorialPuntosRepository;
+import com.upc.ecovibeb.security.entities.User;
+import com.upc.ecovibeb.security.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,12 +15,19 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 @Service
 public class GamificacionService implements IGamificacionService {
 
     @Autowired
     private HistorialPuntosRepository historialRepo;
+
+    @Autowired
+    private UserRepository userRepo;
+
+    @Autowired
+    private INotificacionService notificacionService;
 
     @Autowired
     private IReporteService reporteService;
@@ -56,22 +66,27 @@ public class GamificacionService implements IGamificacionService {
     @Transactional
     public EstadoGamificacionDTO analizarYOtorgarPuntos(Long actividadId, Long usuarioId) {
         ReporteDTO reporte = reporteService.calcularReporte(actividadId);
+        User user = userRepo.findById(usuarioId)
+                .orElseThrow(() -> new NoSuchElementException("Usuario no encontrado"));
 
         int puntosGanadosHoy = 0;
 
-        puntosGanadosHoy += otorgarPuntosInternal(usuarioId, "REGISTRO_DIARIO", "Registro de actividad diaria");
-
+        puntosGanadosHoy += otorgarPuntosInternal(user, "REGISTRO_DIARIO", "Registro de actividad diaria");
 
         if (reporte.getResiduosKgCO2e().compareTo(BigDecimal.ZERO) == 0) {
-            puntosGanadosHoy += otorgarPuntosInternal(usuarioId, "RECICLAJE", "¡Buen trabajo reciclando!");
+            puntosGanadosHoy += otorgarPuntosInternal(user, "RECICLAJE", "¡Buen trabajo reciclando!");
         }
-
         if (reporte.getTransporteKgCO2e().compareTo(new BigDecimal("0.5")) < 0) {
-            puntosGanadosHoy += otorgarPuntosInternal(usuarioId, "TRANSPORTE_SOSTENIBLE", "Transporte de bajo impacto");
+            puntosGanadosHoy += otorgarPuntosInternal(user, "TRANSPORTE_SOSTENIBLE", "Transporte de bajo impacto");
         }
-
 
         int saldoTotal = historialRepo.getSaldoPuntos(usuarioId);
+
+        if (puntosGanadosHoy > 0) {
+            notificacionService.crearNotificacion(user,
+                    "¡Ganaste " + puntosGanadosHoy + " puntos por tu registro diario!",
+                    "/tienda");
+        }
 
         return EstadoGamificacionDTO.builder()
                 .puntosTotales(saldoTotal)
@@ -80,12 +95,12 @@ public class GamificacionService implements IGamificacionService {
                 .build();
     }
 
-    private int otorgarPuntosInternal(Long usuarioId, String codigo, String detalle) {
+    private int otorgarPuntosInternal(User usuario, String codigo, String detalle) {
         Integer puntos = ACCIONES_PUNTOS.get(codigo);
         if (puntos == null || puntos <= 0) return 0;
 
         HistorialPuntos ganancia = new HistorialPuntos();
-        ganancia.setUsuarioId(usuarioId);
+        ganancia.setUsuarioId(usuario.getId());
         ganancia.setCodigoAccion(codigo);
         ganancia.setPuntos(puntos);
         ganancia.setDetalle(detalle);
@@ -97,6 +112,8 @@ public class GamificacionService implements IGamificacionService {
     @Override
     @Transactional
     public EstadoGamificacionDTO canjearRecompensa(CanjearRequest request) {
+        User user = userRepo.findById(request.getUsuarioId())
+                .orElseThrow(() -> new NoSuchElementException("Usuario no encontrado"));
 
         RecompensaDTO recompensa = RECOMPENSAS_DISPONIBLES.stream()
                 .filter(r -> r.getId().equals(request.getRecompensaId()))
@@ -105,18 +122,22 @@ public class GamificacionService implements IGamificacionService {
 
         int saldoActual = historialRepo.getSaldoPuntos(request.getUsuarioId());
         if (saldoActual < recompensa.getCostoPuntos()) {
-            throw new IllegalStateException("Puntos insuficientes para canjear esta recompensa");
+            throw new IllegalStateException("Puntos insuficientes");
         }
 
         HistorialPuntos gasto = new HistorialPuntos();
-        gasto.setUsuarioId(request.getUsuarioId());
+        gasto.setUsuarioId(user.getId());
         gasto.setCodigoAccion("CANJE_" + recompensa.getId());
         gasto.setPuntos(-recompensa.getCostoPuntos());
         gasto.setDetalle("Canje: " + recompensa.getNombre());
         historialRepo.save(gasto);
 
-        int nuevoSaldo = saldoActual - recompensa.getCostoPuntos();
+        // ¡Notificación de canje!
+        notificacionService.crearNotificacion(user,
+                "Canjeaste \"" + recompensa.getNombre() + "\" exitosamente.",
+                null);
 
+        int nuevoSaldo = saldoActual - recompensa.getCostoPuntos();
         return EstadoGamificacionDTO.builder()
                 .puntosTotales(nuevoSaldo)
                 .puntosGanados(-recompensa.getCostoPuntos())

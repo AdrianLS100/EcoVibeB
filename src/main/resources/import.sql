@@ -1,3 +1,11 @@
+INSERT INTO roles (id, authority) VALUES (1, 'ROLE_USER') ON CONFLICT (id) DO NOTHING;
+INSERT INTO roles (id, authority) VALUES (2, 'ROLE_FAMILIAR') ON CONFLICT (id) DO NOTHING;
+INSERT INTO roles (id, authority) VALUES (3, 'ROLE_INSTITUCION') ON CONFLICT (id) DO NOTHING;
+
+INSERT INTO users(id, username, email, password, huella_total_kg_co2e, huella_transporte_kg, huella_energia_kg, huella_alimentacion_kg, huella_residuos_kg) VALUES (1,'AdrianLS', 'adrianls@eco.com', '$2a$12$1k34YdrmxBkVborQvZLh2OUvX1S80GVVQjZJ5H55y1eez7XV.nV06', null, null, null, null, null) ON CONFLICT (id) DO NOTHING;
+
+INSERT INTO user_roles (user_id, role_id) VALUES (1, 1) ON CONFLICT (user_id, role_id) DO NOTHING;
+
 INSERT INTO factores_emision (categoria, subcategoria, unidad_base, factor_kgco2e_per_unidad, fuente, vigente) VALUES ('transporte', 'auto', 'km', 0.20, 'demo', true);
 INSERT INTO factores_emision (categoria, subcategoria, unidad_base, factor_kgco2e_per_unidad, fuente, vigente) VALUES ('transporte', 'moto', 'km', 0.12, 'demo', true);
 INSERT INTO factores_emision (categoria, subcategoria, unidad_base, factor_kgco2e_per_unidad, fuente, vigente) VALUES ('transporte', 'avion', 'km', 0.25, 'demo', true);
@@ -32,9 +40,7 @@ INSERT INTO recursos_educativos (tipo, titulo, url, fuente, tema, creado_en) VAL
 INSERT INTO recursos_educativos (tipo, titulo, url, fuente, tema, creado_en) VALUES ('ARTICULO', 'La guía definitiva para no perderte en el mundo de la moda sostenible', 'https://www.vogue.es/moda/articulos/moda-sostenible-que-significa-guia-consejos-marcas', 'Vogue', 'consumo', now());
 INSERT INTO recursos_educativos (tipo, titulo, url, fuente, tema, creado_en) VALUES ('VIDEO', 'El cambio climático y la alimentación saludable', 'https://www.youtube.com/watch?v=jq6u8RoqGOE', 'Canal12Ch', 'alimentacion', now());
 INSERT INTO recursos_educativos (tipo, titulo, url, fuente, tema, creado_en) VALUES ('PODCAST', 'Cuidado del Medio Ambiente', 'https://open.spotify.com/show/1F47qzb5Vb5z2NHMa1yh6i', 'Leslie Serna', 'Medio Ambiente', now());
--- 1. Crear un usuario de prueba (ID 1)
-INSERT INTO users (id, username, email) VALUES (1, 'testuser', 'test@user.com');
 
--- 2. (Recomendado) Reiniciar la secuencia de IDs de usuarios
--- Esto asegura que si se registra un nuevo usuario, empiece desde el ID 2
+SELECT setval('roles_id_seq', (SELECT MAX(id) FROM roles));
 SELECT setval('users_id_seq', (SELECT MAX(id) FROM users));
+SELECT setval('actividades_diarias_actividad_id_seq', (SELECT MAX(actividad_id) FROM actividades_diarias));
