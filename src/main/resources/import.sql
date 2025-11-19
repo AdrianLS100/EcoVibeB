@@ -4,7 +4,9 @@ INSERT INTO roles (id, authority) VALUES (3, 'ROLE_INSTITUCION') ON CONFLICT (id
 
 INSERT INTO users(id, username, email, password, huella_total_kg_co2e, huella_transporte_kg, huella_energia_kg, huella_alimentacion_kg, huella_residuos_kg) VALUES (1,'AdrianLS', 'adrianls@eco.com', '$2a$12$1k34YdrmxBkVborQvZLh2OUvX1S80GVVQjZJ5H55y1eez7XV.nV06', null, null, null, null, null) ON CONFLICT (id) DO NOTHING;
 
+
 INSERT INTO user_roles (user_id, role_id) VALUES (1, 1) ON CONFLICT (user_id, role_id) DO NOTHING;
+
 
 INSERT INTO factores_emision (categoria, subcategoria, unidad_base, factor_kgco2e_per_unidad, fuente, vigente) VALUES ('transporte', 'auto', 'km', 0.20, 'demo', true);
 INSERT INTO factores_emision (categoria, subcategoria, unidad_base, factor_kgco2e_per_unidad, fuente, vigente) VALUES ('transporte', 'moto', 'km', 0.12, 'demo', true);

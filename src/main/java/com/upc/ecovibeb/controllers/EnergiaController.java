@@ -18,21 +18,21 @@ public class EnergiaController {
     private IEnergiaService energiaService;
 
     @PostMapping("/energia")
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('USER') or hasRole('FAMILIAR')")
     public ResponseEntity<EnergiaDTO> crear(@RequestBody EnergiaDTO dto) {
         EnergiaDTO creado = energiaService.crear(dto);
         return ResponseEntity.ok(creado);
     }
 
     @GetMapping("/por-actividadE/{actividadId}")
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('USER') or hasRole('FAMILIAR')")
     public ResponseEntity<List<EnergiaDTO>> listarPorActividad(@PathVariable Long actividadId) {
         List<EnergiaDTO> lista = energiaService.listarPorActividad(actividadId);
         return ResponseEntity.ok(lista);
     }
 
     @DeleteMapping("/energia/{id}")
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('USER') or hasRole('FAMILIAR')")
     public ResponseEntity<Void> eliminar(@PathVariable Long id) {
         energiaService.eliminar(id);
         return ResponseEntity.noContent().build();

@@ -1,5 +1,6 @@
 package com.upc.ecovibeb.controllers;
 
+import com.upc.ecovibeb.dtos.FamiliaRankingDTO;
 import com.upc.ecovibeb.dtos.RankingDTO;
 import com.upc.ecovibeb.interfaces.IRankingService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,19 +11,25 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/ranking")
 @CrossOrigin(origins = "http://localhost:4200", allowCredentials = "true", exposedHeaders = "Authorization")
 public class RankingController {
 
     @Autowired
     private IRankingService rankingService;
 
-    @GetMapping("/ranking")
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+
+    @GetMapping
     public ResponseEntity<List<RankingDTO>> getRanking(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
         return ResponseEntity.ok(rankingService.getRankingPersonal(page, size));
+    }
+
+    @GetMapping("/familiar")
+    @PreAuthorize("hasRole('FAMILIAR') or hasRole('USER') or hasRole('INSTITUCION')")
+    public ResponseEntity<List<FamiliaRankingDTO>> getRankingFamiliar() {
+        return ResponseEntity.ok(rankingService.getRankingFamiliar());
     }
 }

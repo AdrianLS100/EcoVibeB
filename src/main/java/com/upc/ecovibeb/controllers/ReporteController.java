@@ -18,7 +18,7 @@ public class ReporteController {
     public record ReporteRequest(Long actividadId) {}
 
     @PostMapping("/calcular")
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    @PreAuthorize("hasRole('USER') or hasRole('FAMILIAR')")
     public ResponseEntity<ReporteDTO> calcularReporte(@RequestBody ReporteRequest request) {
         ReporteDTO reporte = reporteService.calcularReporte(request.actividadId());
         return ResponseEntity.ok(reporte);

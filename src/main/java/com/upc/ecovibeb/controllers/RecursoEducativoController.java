@@ -18,7 +18,7 @@ public class RecursoEducativoController {
     private IRecursoEducativoService service;
 
     @GetMapping
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    @PreAuthorize("hasRole('USER') or hasRole('FAMILIAR')")
     public ResponseEntity<Page<RecursoEducativoDTO>> listar(
             @RequestParam(required = false) Tipo tipo,
             @RequestParam(required = false) String q,

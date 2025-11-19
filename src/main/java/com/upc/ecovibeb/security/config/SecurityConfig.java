@@ -5,6 +5,7 @@ import com.upc.ecovibeb.security.services.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer; // <-- 1. IMPORTA ESTO
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -53,6 +54,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authz -> authz
                         // 7. CORRECCIÓN DE RUTA: Tu log llama a "/api/auth/login"
                         .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/ranking").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -61,8 +63,6 @@ public class SecurityConfig {
         return http.build();
     }
 
-    // --- ¡AÑADE ESTE BEAN COMPLETO PARA CONFIGURAR CORS! ---
-    // 8. Define las reglas de CORS
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();

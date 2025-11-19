@@ -1,6 +1,8 @@
 package com.upc.ecovibeb.services;
 
+import com.upc.ecovibeb.dtos.FamiliaRankingDTO;
 import com.upc.ecovibeb.dtos.RankingDTO;
+import com.upc.ecovibeb.repositories.FamiliaRepository;
 import com.upc.ecovibeb.security.entities.User;
 import com.upc.ecovibeb.interfaces.IRankingService;
 import com.upc.ecovibeb.security.repositories.UserRepository;
@@ -18,6 +20,9 @@ public class RankingService implements IRankingService {
     @Autowired
     private UserRepository userRepo;
 
+    @Autowired
+    private FamiliaRepository familiaRepo;
+
     @Override
     public List<RankingDTO> getRankingPersonal(int page, int size) {
         Page<User> userPage = userRepo.findUsersForRanking(PageRequest.of(page, size));
@@ -26,7 +31,6 @@ public class RankingService implements IRankingService {
         long rankInicial = (long) page * size + 1;
 
         for (User user : userPage.getContent()) {
-            // --- ¡AQUÍ ESTÁ LA CORRECCIÓN! ---
             rankingList.add(new RankingDTO(
                     rankInicial++,
                     user.getUsername(),
@@ -38,5 +42,21 @@ public class RankingService implements IRankingService {
             ));
         }
         return rankingList;
+    }
+
+    public List<FamiliaRankingDTO> getRankingFamiliar() {
+        List<FamiliaRankingDTO> ranking = familiaRepo.obtenerRankingFamilias();
+
+        // Asignamos el número de puesto (1, 2, 3...)
+        long rank = 1;
+        for (FamiliaRankingDTO dto : ranking) {
+            dto.setRank(rank++);
+        }
+
+        // Devolvemos solo el Top 10
+        if (ranking.size() > 10) {
+            return ranking.subList(0, 10);
+        }
+        return ranking;
     }
 }

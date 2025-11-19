@@ -70,17 +70,18 @@ public class UserService {
 
     public ProfileDTO getProfile(Long userId) {
         User user = this.findById(userId);
+
+        String nombreFamilia = (user.getFamilia() != null) ? user.getFamilia().getNombre() : null;
+
         return new ProfileDTO(
                 user.getId(),
                 user.getUsername(),
                 user.getEmail(),
-                user.getHuellaTotalKgCO2e()
+                user.getHuellaTotalKgCO2e(),
+                nombreFamilia
         );
     }
 
-    /**
-     * Cambia la contraseña del usuario.
-     */
     @Transactional
     public void changePassword(Long userId, UpdatePasswordDTO dto) {
         User user = this.findById(userId);

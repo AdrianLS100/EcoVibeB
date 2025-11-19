@@ -1,6 +1,8 @@
 package com.upc.ecovibeb.security.entities;
 
 import com.upc.ecovibeb.entities.ActividadesDiarias;
+import com.upc.ecovibeb.entities.Familia;
+import com.upc.ecovibeb.entities.Institucion;
 import com.upc.ecovibeb.entities.Notificacion;
 import jakarta.persistence.*;
 import lombok.*;
@@ -53,6 +55,14 @@ public class User implements UserDetails {
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
     private Set<Role> roles = new HashSet<>();
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "familia_id")
+    private Familia familia;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "institucion_id")
+    private Institucion institucion;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -18,14 +18,14 @@ public class ResiduoController {
     private IResiduoService residuoService;
 
     @PostMapping("/residuo")
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('USER') or hasRole('FAMILIAR')")
     public ResponseEntity<ResiduoDTO> crear(@RequestBody ResiduoDTO dto) {
         ResiduoDTO creado = residuoService.crear(dto);
         return ResponseEntity.ok(creado);
     }
 
     @GetMapping("/por-actividadR/{actividadId}")
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('USER') or hasRole('FAMILIAR')")
     public ResponseEntity<List<ResiduoDTO>> listarPorActividad(@PathVariable Long actividadId) {
         List<ResiduoDTO> lista = residuoService.listarPorActividad(actividadId);
         return ResponseEntity.ok(lista);

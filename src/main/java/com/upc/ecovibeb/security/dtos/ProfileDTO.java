@@ -13,4 +13,5 @@ public class ProfileDTO {
     private String username;
     private String email;
     private BigDecimal huellaTotalKgCO2e;
+    private String nombreFamilia;
 }
