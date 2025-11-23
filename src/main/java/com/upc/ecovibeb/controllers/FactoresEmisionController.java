@@ -20,7 +20,7 @@ public class FactoresEmisionController {
     public record BuscarFactorRequest(String categoria, String subcategoria, String unidadBase) {}
 
     @PostMapping("/buscar")
-    @PreAuthorize("hasRole('USER') or hasRole('FAMILIAR')")
+    @PreAuthorize("hasRole('USER') or hasRole('FAMILIAR') or hasRole('INSTITUCION')")
     public ResponseEntity<FactoresEmisionDTO> buscarVigente(@RequestBody BuscarFactorRequest request) {
         return factoresService.buscarVigente(request.categoria(), request.subcategoria(), request.unidadBase())
                 .map(ResponseEntity::ok)
@@ -29,19 +29,19 @@ public class FactoresEmisionController {
 
 
     @PostMapping
-    @PreAuthorize("hasRole('USER') or hasRole('FAMILIAR')")
+    @PreAuthorize("hasRole('USER') or hasRole('FAMILIAR') or hasRole('INSTITUCION')")
     public ResponseEntity<FactoresEmisionDTO> crear(@RequestBody FactoresEmisionDTO dto) {
         return ResponseEntity.ok(factoresService.crear(dto));
     }
 
     @GetMapping
-    @PreAuthorize("hasRole('USER') or hasRole('FAMILIAR')")
+    @PreAuthorize("hasRole('USER') or hasRole('FAMILIAR') or hasRole('INSTITUCION')")
     public ResponseEntity<List<FactoresEmisionDTO>> listar() {
         return ResponseEntity.ok(factoresService.listar());
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('USER') or hasRole('FAMILIAR')")
+    @PreAuthorize("hasRole('USER') or hasRole('FAMILIAR') or hasRole('INSTITUCION')")
     public ResponseEntity<FactoresEmisionDTO> obtenerPorId(@PathVariable Long id) {
         return factoresService.obtener(id)
                 .map(ResponseEntity::ok)

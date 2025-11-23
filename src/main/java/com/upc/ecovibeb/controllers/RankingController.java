@@ -1,6 +1,7 @@
 package com.upc.ecovibeb.controllers;
 
 import com.upc.ecovibeb.dtos.FamiliaRankingDTO;
+import com.upc.ecovibeb.dtos.InstitucionRankingDTO;
 import com.upc.ecovibeb.dtos.RankingDTO;
 import com.upc.ecovibeb.interfaces.IRankingService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,8 +29,14 @@ public class RankingController {
     }
 
     @GetMapping("/familiar")
-    @PreAuthorize("hasRole('FAMILIAR') or hasRole('USER') or hasRole('INSTITUCION')")
+    @PreAuthorize("hasRole('FAMILIAR') or hasRole('USER')")
     public ResponseEntity<List<FamiliaRankingDTO>> getRankingFamiliar() {
         return ResponseEntity.ok(rankingService.getRankingFamiliar());
+    }
+
+    @GetMapping("/institucional")
+    @PreAuthorize("hasRole('INSTITUCION') or hasRole('USER')")
+    public ResponseEntity<List<InstitucionRankingDTO>> getRankingInstitucional() {
+        return ResponseEntity.ok(rankingService.getRankingInstitucional());
     }
 }

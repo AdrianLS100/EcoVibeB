@@ -16,7 +16,7 @@ public class CalculadoraController {
     private ICalculadoraService calculadoraService;
 
     @PostMapping("/calculadora")
-    @PreAuthorize("hasRole('USER') or hasRole('FAMILIAR')")
+    @PreAuthorize("hasRole('USER') or hasRole('FAMILIAR') or hasRole('INSTITUCION')")
     public ResponseEntity<CalculadoraPersonalDTO> calcularPersonal(
             @RequestBody CalculadoraPersonalDTO request) {
 

@@ -20,7 +20,7 @@ public class NotificacionController {
     private INotificacionService service;
 
     @GetMapping
-    @PreAuthorize("hasRole('USER') or hasRole('FAMILIAR')")
+    @PreAuthorize("hasRole('USER') or hasRole('FAMILIAR') or hasRole('INSTITUCION')")
     public ResponseEntity<Page<NotificacionDTO>> getNotificaciones(
             @RequestParam Long usuarioId,
             @RequestParam(defaultValue = "0") int page,
@@ -30,13 +30,13 @@ public class NotificacionController {
     }
 
     @GetMapping("/resumen")
-    @PreAuthorize("hasRole('USER') or hasRole('FAMILIAR')")
+    @PreAuthorize("hasRole('USER') or hasRole('FAMILIAR') or hasRole('INSTITUCION')")
     public ResponseEntity<Map<String, Long>> getResumen(@RequestParam Long usuarioId) {
         return ResponseEntity.ok(service.getResumen(usuarioId));
     }
 
     @PostMapping("/marcar-leidas")
-    @PreAuthorize("hasRole('USER') or hasRole('FAMILIAR')")
+    @PreAuthorize("hasRole('USER') or hasRole('FAMILIAR') or hasRole('INSTITUCION')")
     public ResponseEntity<Void> marcarLeidas(@RequestParam Long usuarioId, @RequestBody List<Long> ids) {
         service.marcarLeidas(ids, usuarioId);
         return ResponseEntity.ok().build();

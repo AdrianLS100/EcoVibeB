@@ -73,12 +73,15 @@ public class UserService {
 
         String nombreFamilia = (user.getFamilia() != null) ? user.getFamilia().getNombre() : null;
 
+        String nombreInstitucion = (user.getInstitucion() != null) ? user.getInstitucion().getNombre() : null;
+
         return new ProfileDTO(
                 user.getId(),
                 user.getUsername(),
                 user.getEmail(),
                 user.getHuellaTotalKgCO2e(),
-                nombreFamilia
+                nombreFamilia,
+                nombreInstitucion
         );
     }
 

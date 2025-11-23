@@ -19,7 +19,7 @@ public interface FamiliaRepository extends JpaRepository<Familia, Long> {
     @Query("SELECT new com.upc.ecovibeb.dtos.FamiliaRankingDTO(" +
             "0L, " +
             "f.nombre, " +
-            "CAST(COUNT(u) AS int), " + // Convertimos el Long de COUNT a int
+            "CAST(COUNT(u) AS int), " +
             "SUM(u.huellaTotalKgCO2e)) " +
             "FROM Familia f JOIN f.miembros u " +
             "WHERE u.huellaTotalKgCO2e IS NOT NULL " +

@@ -8,6 +8,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface HistorialPuntosRepository extends JpaRepository<HistorialPuntos, Long> {
-    @Query("SELECT COALESCE(SUM(h.puntos), 0) FROM HistorialPuntos h WHERE h.usuarioId = :usuarioId")
+    @Query("SELECT COALESCE(SUM(h.puntos), 0) FROM HistorialPuntos h WHERE h.usuario.id = :usuarioId")
     int getSaldoPuntos(@Param("usuarioId") Long usuarioId);
 }

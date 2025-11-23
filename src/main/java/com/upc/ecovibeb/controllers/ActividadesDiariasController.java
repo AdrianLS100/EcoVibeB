@@ -29,7 +29,7 @@ public class ActividadesDiariasController {
     ) {}
 
     @PostMapping("/crearactividad")
-    @PreAuthorize("hasRole('USER') or hasRole('FAMILIAR')")
+    @PreAuthorize("hasRole('USER') or hasRole('FAMILIAR') or hasRole('INSTITUCION')")
     public ResponseEntity<?> crearActividad(@RequestBody CrearActividadRequest req) {
         try {
             ActividadesDiariasDTO dto = actividadesService.crearActividad(
@@ -50,14 +50,14 @@ public class ActividadesDiariasController {
     }
 
     @GetMapping("/{actividadId}")
-    @PreAuthorize("hasRole('USER') or hasRole('FAMILIAR')")
+    @PreAuthorize("hasRole('USER') or hasRole('FAMILIAR') or hasRole('INSTITUCION')")
     public ResponseEntity<ActividadesDiariasDTO> obtenerPorId(@PathVariable Long actividadId) {
         Optional<ActividadesDiariasDTO> dto = actividadesService.obtenerPorId(actividadId);
         return dto.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{actividadId}")
-    @PreAuthorize("hasRole('USER') or hasRole('FAMILIAR')")
+    @PreAuthorize("hasRole('USER') or hasRole('FAMILIAR') or hasRole('INSTITUCION')")
     public ResponseEntity<Void> eliminar(@PathVariable Long actividadId) {
         actividadesService.eliminar(actividadId);
         return ResponseEntity.noContent().build();

@@ -1,5 +1,6 @@
 package com.upc.ecovibeb.entities;
 
+import com.upc.ecovibeb.security.entities.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,8 +16,9 @@ public class HistorialPuntos {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "usuario_id", nullable = false)
-    private Long usuarioId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "usuario_id", nullable = false)
+    private User usuario;
 
     @Column(nullable = false, length = 60)
     private String codigoAccion;

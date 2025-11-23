@@ -66,11 +66,14 @@ public class GamificacionService implements IGamificacionService {
     @Transactional
     public EstadoGamificacionDTO analizarYOtorgarPuntos(Long actividadId, Long usuarioId) {
         ReporteDTO reporte = reporteService.calcularReporte(actividadId);
+
+        // Obtenemos el User completo (necesario para guardar la relación)
         User user = userRepo.findById(usuarioId)
                 .orElseThrow(() -> new NoSuchElementException("Usuario no encontrado"));
 
         int puntosGanadosHoy = 0;
 
+        // Pasamos el objeto 'user' en lugar del ID
         puntosGanadosHoy += otorgarPuntosInternal(user, "REGISTRO_DIARIO", "Registro de actividad diaria");
 
         if (reporte.getResiduosKgCO2e().compareTo(BigDecimal.ZERO) == 0) {
@@ -100,7 +103,9 @@ public class GamificacionService implements IGamificacionService {
         if (puntos == null || puntos <= 0) return 0;
 
         HistorialPuntos ganancia = new HistorialPuntos();
-        ganancia.setUsuarioId(usuario.getId());
+
+        // Usamos setUsuario(Objeto) en lugar de setUsuarioId(Long)
+        ganancia.setUsuario(usuario);
         ganancia.setCodigoAccion(codigo);
         ganancia.setPuntos(puntos);
         ganancia.setDetalle(detalle);
@@ -126,17 +131,20 @@ public class GamificacionService implements IGamificacionService {
         }
 
         HistorialPuntos gasto = new HistorialPuntos();
-        gasto.setUsuarioId(user.getId());
+
+        // Usamos setUsuario(Objeto)
+        gasto.setUsuario(user);
+
         gasto.setCodigoAccion("CANJE_" + recompensa.getId());
         gasto.setPuntos(-recompensa.getCostoPuntos());
         gasto.setDetalle("Canje: " + recompensa.getNombre());
         historialRepo.save(gasto);
 
-        // ¡Notificación de canje!
         notificacionService.crearNotificacion(user,
                 "Canjeaste \"" + recompensa.getNombre() + "\" exitosamente.",
                 null);
 
+        // Calculamos el saldo manualmente para devolverlo rápido
         int nuevoSaldo = saldoActual - recompensa.getCostoPuntos();
         return EstadoGamificacionDTO.builder()
                 .puntosTotales(nuevoSaldo)
