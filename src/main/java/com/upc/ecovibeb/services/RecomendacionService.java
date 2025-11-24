@@ -1,10 +1,13 @@
 package com.upc.ecovibeb.services;
 
 import com.upc.ecovibeb.dtos.RecomendacionDTO;
+import com.upc.ecovibeb.entities.Familia;
+import com.upc.ecovibeb.entities.Institucion;
 import com.upc.ecovibeb.security.entities.User;
 import com.upc.ecovibeb.security.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -17,64 +20,72 @@ public class RecomendacionService {
     @Autowired
     private UserRepository userRepo;
 
+    @Autowired private FamiliaService familiaService;
+    @Autowired private InstitucionService institucionService;
+
+    @Transactional(readOnly = true)
     public List<RecomendacionDTO> generarRecomendaciones(Long usuarioId) {
         User user = userRepo.findById(usuarioId)
                 .orElseThrow(() -> new NoSuchElementException("Usuario no encontrado"));
 
         List<RecomendacionDTO> recomendaciones = new ArrayList<>();
-        boolean esFamilia = (user.getFamilia() != null);
+
+        if (user.getInstitucion() != null) {
+            return generarParaInstitucion(user.getInstitucion());
+        } else if (user.getFamilia() != null) {
+            return generarParaFamilia(user.getFamilia(), user.getId());
+        } else {
+            return generarParaUsuario(user);
+        }
+    }
+
+    private List<RecomendacionDTO> generarParaUsuario(User user) {
+        List<RecomendacionDTO> recs = new ArrayList<>();
 
         if (user.getHuellaTotalKgCO2e() == null) {
-            recomendaciones.add(new RecomendacionDTO("General",
-                    "Aún no has calculado tu huella de carbono. ¡Usa la calculadora para obtener consejos personalizados!",
-                    "fa-calculator", "ALTO"));
-            return recomendaciones;
+            recs.add(new RecomendacionDTO("General", "Calcula tu huella para recibir consejos.", "fa-calculator", "ALTO"));
+            return recs;
         }
 
-        BigDecimal huellaTransporte = user.getHuellaTransporte();
-        if (huellaTransporte != null && huellaTransporte.compareTo(new BigDecimal("1000")) > 0) {
-            if (esFamilia) {
-                recomendaciones.add(new RecomendacionDTO("Transporte Familiar",
-                        "La huella de transporte de tu familia es alta. Consideren compartir el auto (carpooling) para llevar a los niños o hacer compras grandes.",
-                        "fa-car-side", "ALTO"));
-            } else {
-                recomendaciones.add(new RecomendacionDTO("Transporte",
-                        "Tu huella de transporte es significativa. Intenta usar el transporte público o bicicleta al menos 2 días a la semana.",
-                        "fa-bicycle", "ALTO"));
-            }
-        } else {
-            recomendaciones.add(new RecomendacionDTO("Transporte",
-                    "¡Vas bien en transporte! Mantén tus hábitos de movilidad sostenible.",
-                    "fa-thumbs-up", "BAJO"));
+        if (checkAlto(user.getHuellaTransporte(), 1000)) {
+            recs.add(new RecomendacionDTO("Transporte", "Tu huella de transporte es alta. Intenta usar bicicleta o transporte público.", "fa-bicycle", "ALTO"));
         }
 
-        BigDecimal huellaEnergia = user.getHuellaEnergia();
-        if (huellaEnergia != null && huellaEnergia.compareTo(new BigDecimal("800")) > 0) {
-            if (esFamilia) {
-                recomendaciones.add(new RecomendacionDTO("Energía en Casa",
-                        "El consumo eléctrico es alto. Organicen una 'hora sin tecnología' en familia o cambien a bombillas LED en toda la casa.",
-                        "fa-lightbulb", "MEDIO"));
-            } else {
-                recomendaciones.add(new RecomendacionDTO("Energía",
-                        "No olvides desconectar tus dispositivos cuando no los uses. El 'consumo vampiro' suma mucho a tu huella.",
-                        "fa-plug", "MEDIO"));
-            }
+        return recs;
+    }
+
+    private List<RecomendacionDTO> generarParaFamilia(Familia familia, Long userId) {
+        List<RecomendacionDTO> recs = new ArrayList<>();
+
+        // Obtenemos el dashboard para tener los totales
+        var dashboard = familiaService.getDashboardFamiliar(userId);
+        BigDecimal totalFamilia = dashboard.getHuellaTotalFamiliaKg();
+
+        if (totalFamilia.compareTo(BigDecimal.ZERO) == 0) {
+            recs.add(new RecomendacionDTO("Familia", "Nadie en la familia ha calculado su huella aún.", "fa-users", "ALTO"));
+            return recs;
         }
 
-        BigDecimal huellaAlim = user.getHuellaAlimentacion();
-        if (huellaAlim != null && huellaAlim.compareTo(new BigDecimal("1500")) > 0) {
-            recomendaciones.add(new RecomendacionDTO("Alimentación",
-                    esFamilia ? "Intenten implementar los 'Lunes sin Carne' en las cenas familiares." : "Reducir el consumo de carnes rojas puede bajar drásticamente tu huella personal.",
-                    "fa-utensils", "MEDIO"));
+        recs.add(new RecomendacionDTO("Hogar", "Organicen un día de 'Cero Desperdicio' en familia.", "fa-home", "MEDIO"));
+
+        if (totalFamilia.compareTo(new BigDecimal("5000")) > 0) {
+            recs.add(new RecomendacionDTO("Energía Familiar", "El consumo total es alto. Revisen el aislamiento térmico de la casa.", "fa-temperature-low", "ALTO"));
         }
 
-        BigDecimal huellaResiduos = user.getHuellaResiduos();
-        if (huellaResiduos != null && huellaResiduos.compareTo(new BigDecimal("200")) > 0) {
-            recomendaciones.add(new RecomendacionDTO("Residuos",
-                    "Parece que generas muchos residuos. ¿Ya empezaste a separar plásticos y cartón?",
-                    "fa-recycle", "ALTO"));
-        }
+        return recs;
+    }
 
-        return recomendaciones;
+    private List<RecomendacionDTO> generarParaInstitucion(Institucion institucion) {
+        List<RecomendacionDTO> recs = new ArrayList<>();
+
+        recs.add(new RecomendacionDTO("Comunidad", "Incentiva el carpooling entre los miembros de " + institucion.getTipo().toLowerCase() + ".", "fa-car-side", "ALTO"));
+        recs.add(new RecomendacionDTO("Infraestructura", "Instalar sensores de movimiento para las luces puede reducir un 30% el consumo.", "fa-lightbulb", "MEDIO"));
+        recs.add(new RecomendacionDTO("Residuos", "Implementen puntos de reciclaje visibles en todas las áreas comunes.", "fa-recycle", "BAJO"));
+
+        return recs;
+    }
+
+    private boolean checkAlto(BigDecimal valor, int umbral) {
+        return valor != null && valor.compareTo(new BigDecimal(umbral)) > 0;
     }
 }

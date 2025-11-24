@@ -18,21 +18,21 @@ public class TransporteController {
     private ITransporteService transporteService;
 
     @PostMapping("/transporte")
-    @PreAuthorize("hasRole('USER') or hasRole('FAMILIAR')")
+    @PreAuthorize("hasRole('USER') or hasRole('FAMILIAR') or hasRole('INSTITUCION')")
     public ResponseEntity<TransporteDTO> crear(@RequestBody TransporteDTO dto) {
         TransporteDTO creado = transporteService.crear(dto);
         return ResponseEntity.ok(creado);
     }
 
     @GetMapping("/por-actividad/{actividadId}")
-    @PreAuthorize("hasRole('USER') or hasRole('FAMILIAR')")
+    @PreAuthorize("hasRole('USER') or hasRole('FAMILIAR') or hasRole('INSTITUCION')")
     public ResponseEntity<List<TransporteDTO>> listarPorActividad(@PathVariable Long actividadId) {
         List<TransporteDTO> lista = transporteService.listarPorActividad(actividadId);
         return ResponseEntity.ok(lista);
     }
 
     @DeleteMapping("/transporte/{id}")
-    @PreAuthorize("hasRole('USER') or hasRole('FAMILIAR')")
+    @PreAuthorize("hasRole('USER') or hasRole('FAMILIAR') or hasRole('INSTITUCION')")
     public ResponseEntity<Void> eliminar(@PathVariable Long id) {
         transporteService.eliminar(id);
         return ResponseEntity.noContent().build();

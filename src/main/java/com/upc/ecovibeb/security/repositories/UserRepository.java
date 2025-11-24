@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,4 +26,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
     List<User> findAllByFamiliaId(Long familiaId);
 
     List<User> findAllByInstitucionId(Long institucionId);
+
+    @Query("SELECT AVG(u.huellaTotalKgCO2e) FROM User u WHERE u.huellaTotalKgCO2e IS NOT NULL")
+    Double obtenerPromedioHuella();
+
+    @Query("SELECT MIN(u.huellaTotalKgCO2e) FROM User u WHERE u.huellaTotalKgCO2e IS NOT NULL")
+    BigDecimal obtenerMejorHuella();
 }
