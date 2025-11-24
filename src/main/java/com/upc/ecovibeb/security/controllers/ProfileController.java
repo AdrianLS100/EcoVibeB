@@ -22,14 +22,14 @@ public class ProfileController {
     private UserService userService;
 
     @GetMapping
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    @PreAuthorize("hasRole('USER') or hasRole('FAMILIAR') or hasRole('INSTITUCION')")
     public ResponseEntity<ProfileDTO> getMyProfile(@AuthenticationPrincipal UserDetails userDetails) {
         User user = (User) userDetails;
         return ResponseEntity.ok(userService.getProfile(user.getId()));
     }
 
     @PostMapping("/change-password")
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    @PreAuthorize("hasRole('USER') or hasRole('FAMILIAR') or hasRole('INSTITUCION')")
     public ResponseEntity<?> changeMyPassword(
             @AuthenticationPrincipal UserDetails userDetails,
             @RequestBody UpdatePasswordDTO request) {

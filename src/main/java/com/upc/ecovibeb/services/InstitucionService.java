@@ -78,7 +78,7 @@ public class InstitucionService {
                 .map(User::getHuellaTotalKgCO2e)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        List<ActividadesDiarias> feed = actRepo.findTop5ByUsuario_InstitucionIdOrderByFechaDesc(inst.getId());
+        List<ActividadesDiarias> feed = actRepo.findTop5ByUsuario_Institucion_IdOrderByFechaDesc(inst.getId());
 
         InstitucionDashboardDTO dto = new InstitucionDashboardDTO();
         dto.setNombre(inst.getNombre());

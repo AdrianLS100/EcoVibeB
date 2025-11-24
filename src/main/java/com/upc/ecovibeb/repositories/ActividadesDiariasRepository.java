@@ -12,5 +12,4 @@ import java.util.Optional;
 public interface ActividadesDiariasRepository extends JpaRepository<ActividadesDiarias, Long> {
     Optional<ActividadesDiarias> findByUsuarioIdAndFecha(Long usuarioId, LocalDate fecha);
     List<ActividadesDiarias> findTop5ByUsuario_FamiliaIdOrderByFechaDesc(Long familiaId);
-    List<ActividadesDiarias> findTop5ByUsuario_InstitucionIdOrderByFechaDesc(Long institucionId);
-}
+    List<ActividadesDiarias> findTop5ByUsuario_Institucion_IdOrderByFechaDesc(Long institucionId);}
