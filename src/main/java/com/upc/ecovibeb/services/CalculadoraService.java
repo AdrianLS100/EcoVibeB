@@ -80,6 +80,8 @@ public class CalculadoraService implements ICalculadoraService {
 
         // 5. TOTALIZAR Y RELLENAR EL DTO DE RESPUESTA
         BigDecimal totalKgAnual = totalTransporte.add(totalEnergia).add(totalAlimentacion).add(totalResiduos);
+        System.out.println("CÁLCULO FINALIZADO: " + totalKgAnual + " kg CO2e");
+        req.setTotalKgCO2e(totalKgAnual.setScale(2, RoundingMode.HALF_UP));
         user.setHuellaTotalKgCO2e(totalKgAnual.setScale(2, RoundingMode.HALF_UP));
         user.setHuellaTransporte(totalTransporte.setScale(2, RoundingMode.HALF_UP));
         user.setHuellaEnergia(totalEnergia.setScale(2, RoundingMode.HALF_UP));
