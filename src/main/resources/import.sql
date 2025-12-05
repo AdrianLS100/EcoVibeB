@@ -1,32 +1,32 @@
-INSERT INTO roles (id, authority) VALUES (1, 'ROLE_USER') ON CONFLICT (id) DO NOTHING;
-INSERT INTO roles (id, authority) VALUES (2, 'ROLE_FAMILIAR') ON CONFLICT (id) DO NOTHING;
-INSERT INTO roles (id, authority) VALUES (3, 'ROLE_INSTITUCION') ON CONFLICT (id) DO NOTHING;
+INSERT INTO roles (id, authority) VALUES (1, 'ROLE_USER');
+INSERT INTO roles (id, authority) VALUES (2, 'ROLE_FAMILIAR');
+INSERT INTO roles (id, authority) VALUES (3, 'ROLE_INSTITUCION');
 
-INSERT INTO familias (id, nombre, codigo_invitacion) VALUES (1, 'Los Pérez', 'FAM-1234') ON CONFLICT (id) DO NOTHING;
-INSERT INTO instituciones (id, nombre, tipo, codigo_invitacion) VALUES (1, 'Colegio San Agustín', 'Colegio', 'INST-9999') ON CONFLICT (id) DO NOTHING;
+INSERT INTO familias (id, nombre, codigo_invitacion) VALUES (1, 'Los Pérez', 'FAM-1234');
+INSERT INTO instituciones (id, nombre, tipo, codigo_invitacion) VALUES (1, 'Colegio San Agustín', 'Colegio', 'INST-9999');
 
-INSERT INTO users(id, username, email, password, huella_total_kg_co2e, huella_transporte_kg, huella_energia_kg, huella_alimentacion_kg, huella_residuos_kg) VALUES (1, 'AdrianLS', 'adrian@eco.com', '$2a$12$lu7mBMUvnCmsGswFbqtgxunl6qiUePUxtPMe51Di5pQib/PTTzzny', 3500.00, 1200.00, 1000.00, 800.00, 500.00) ON CONFLICT (id) DO NOTHING;
-INSERT INTO users(id, username, email, password, huella_total_kg_co2e, huella_transporte_kg, huella_energia_kg, huella_alimentacion_kg, huella_residuos_kg) VALUES (2, 'CarlosEco', 'carlos@eco.com', '$2a$12$lu7mBMUvnCmsGswFbqtgxunl6qiUePUxtPMe51Di5pQib/PTTzzny', 2800.00, 800.00, 900.00, 900.00, 200.00) ON CONFLICT (id) DO NOTHING;
+INSERT INTO users(id, username, email, password, huella_total_kg_co2e, huella_transporte_kg, huella_energia_kg, huella_alimentacion_kg, huella_residuos_kg) VALUES (1, 'AdrianLS', 'adrian@eco.com', '$2a$12$lu7mBMUvnCmsGswFbqtgxunl6qiUePUxtPMe51Di5pQib/PTTzzny', 3500.00, 1200.00, 1000.00, 800.00, 500.00);
+INSERT INTO users(id, username, email, password, huella_total_kg_co2e, huella_transporte_kg, huella_energia_kg, huella_alimentacion_kg, huella_residuos_kg) VALUES (2, 'CarlosEco', 'carlos@eco.com', '$2a$12$lu7mBMUvnCmsGswFbqtgxunl6qiUePUxtPMe51Di5pQib/PTTzzny', 2800.00, 800.00, 900.00, 900.00, 200.00);
 
-INSERT INTO users(id, username, email, password, familia_id, huella_total_kg_co2e, huella_transporte_kg, huella_energia_kg, huella_alimentacion_kg, huella_residuos_kg) VALUES (3, 'PapaPerez', 'papa@perez.com', '$2a$12$lu7mBMUvnCmsGswFbqtgxunl6qiUePUxtPMe51Di5pQib/PTTzzny', 1, 4500.00, 2000.00, 1500.00, 800.00, 200.00) ON CONFLICT (id) DO NOTHING;
-INSERT INTO users(id, username, email, password, familia_id, huella_total_kg_co2e, huella_transporte_kg, huella_energia_kg, huella_alimentacion_kg, huella_residuos_kg) VALUES (4, 'MamaPerez', 'mama@perez.com', '$2a$12$lu7mBMUvnCmsGswFbqtgxunl6qiUePUxtPMe51Di5pQib/PTTzzny', 1, 3200.00, 1000.00, 1200.00, 900.00, 100.00) ON CONFLICT (id) DO NOTHING;
-INSERT INTO users(id, username, email, password, familia_id, huella_total_kg_co2e) VALUES (5, 'HijoPerez', 'hijo@perez.com', '$2a$12$lu7mBMUvnCmsGswFbqtgxunl6qiUePUxtPMe51Di5pQib/PTTzzny', 1, null) ON CONFLICT (id) DO NOTHING;
+INSERT INTO users(id, username, email, password, familia_id, huella_total_kg_co2e, huella_transporte_kg, huella_energia_kg, huella_alimentacion_kg, huella_residuos_kg) VALUES (3, 'PapaPerez', 'papa@perez.com', '$2a$12$lu7mBMUvnCmsGswFbqtgxunl6qiUePUxtPMe51Di5pQib/PTTzzny', 1, 4500.00, 2000.00, 1500.00, 800.00, 200.00);
+INSERT INTO users(id, username, email, password, familia_id, huella_total_kg_co2e, huella_transporte_kg, huella_energia_kg, huella_alimentacion_kg, huella_residuos_kg) VALUES (4, 'MamaPerez', 'mama@perez.com', '$2a$12$lu7mBMUvnCmsGswFbqtgxunl6qiUePUxtPMe51Di5pQib/PTTzzny', 1, 3200.00, 1000.00, 1200.00, 900.00, 100.00);
+INSERT INTO users(id, username, email, password, familia_id, huella_total_kg_co2e) VALUES (5, 'HijoPerez', 'hijo@perez.com', '$2a$12$lu7mBMUvnCmsGswFbqtgxunl6qiUePUxtPMe51Di5pQib/PTTzzny', 1, null);
 
-INSERT INTO users(id, username, email, password, institucion_id, huella_total_kg_co2e) VALUES (6, 'DirectorSA', 'director@sa.edu.pe', '$2a$12$lu7mBMUvnCmsGswFbqtgxunl6qiUePUxtPMe51Di5pQib/PTTzzny', 1, 5000.00) ON CONFLICT (id) DO NOTHING;
-INSERT INTO users(id, username, email, password, institucion_id, huella_total_kg_co2e) VALUES (7, 'ProfMartinez', 'martinez@sa.edu.pe', '$2a$12$lu7mBMUvnCmsGswFbqtgxunl6qiUePUxtPMe51Di5pQib/PTTzzny', 1, 3800.00) ON CONFLICT (id) DO NOTHING;
-INSERT INTO users(id, username, email, password, institucion_id, huella_total_kg_co2e) VALUES (8, 'AlumnoJuan', 'juan@sa.edu.pe', '$2a$12$lu7mBMUvnCmsGswFbqtgxunl6qiUePUxtPMe51Di5pQib/PTTzzny', 1, 2500.00) ON CONFLICT (id) DO NOTHING;
+INSERT INTO users(id, username, email, password, institucion_id, huella_total_kg_co2e) VALUES (6, 'DirectorSA', 'director@sa.edu.pe', '$2a$12$lu7mBMUvnCmsGswFbqtgxunl6qiUePUxtPMe51Di5pQib/PTTzzny', 1, 5000.00);
+INSERT INTO users(id, username, email, password, institucion_id, huella_total_kg_co2e) VALUES (7, 'ProfMartinez', 'martinez@sa.edu.pe', '$2a$12$lu7mBMUvnCmsGswFbqtgxunl6qiUePUxtPMe51Di5pQib/PTTzzny', 1, 3800.00);
+INSERT INTO users(id, username, email, password, institucion_id, huella_total_kg_co2e) VALUES (8, 'AlumnoJuan', 'juan@sa.edu.pe', '$2a$12$lu7mBMUvnCmsGswFbqtgxunl6qiUePUxtPMe51Di5pQib/PTTzzny', 1, 2500.00);
 
 UPDATE familias SET admin_user_id = 3 WHERE id = 1;
 UPDATE instituciones SET admin_user_id = 6 WHERE id = 1;
 
-INSERT INTO user_roles (user_id, role_id) VALUES (1, 1) ON CONFLICT DO NOTHING;
-INSERT INTO user_roles (user_id, role_id) VALUES (2, 1) ON CONFLICT DO NOTHING;
-INSERT INTO user_roles (user_id, role_id) VALUES (3, 2) ON CONFLICT DO NOTHING;
-INSERT INTO user_roles (user_id, role_id) VALUES (4, 2) ON CONFLICT DO NOTHING;
-INSERT INTO user_roles (user_id, role_id) VALUES (5, 2) ON CONFLICT DO NOTHING;
-INSERT INTO user_roles (user_id, role_id) VALUES (6, 3) ON CONFLICT DO NOTHING;
-INSERT INTO user_roles (user_id, role_id) VALUES (7, 3) ON CONFLICT DO NOTHING;
-INSERT INTO user_roles (user_id, role_id) VALUES (8, 3) ON CONFLICT DO NOTHING;
+INSERT INTO user_roles (user_id, role_id) VALUES (1, 1);
+INSERT INTO user_roles (user_id, role_id) VALUES (2, 1);
+INSERT INTO user_roles (user_id, role_id) VALUES (3, 2);
+INSERT INTO user_roles (user_id, role_id) VALUES (4, 2);
+INSERT INTO user_roles (user_id, role_id) VALUES (5, 2);
+INSERT INTO user_roles (user_id, role_id) VALUES (6, 3);
+INSERT INTO user_roles (user_id, role_id) VALUES (7, 3);
+INSERT INTO user_roles (user_id, role_id) VALUES (8, 3);
 
 
 INSERT INTO factores_emision (categoria, subcategoria, unidad_base, factor_kgco2e_per_unidad, fuente, vigente) VALUES ('transporte', 'auto', 'km', 0.20, 'demo', true);
