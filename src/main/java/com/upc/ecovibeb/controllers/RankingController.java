@@ -1,5 +1,5 @@
 package com.upc.ecovibeb.controllers;
-hola
+
 import com.upc.ecovibeb.dtos.FamiliaRankingDTO;
 import com.upc.ecovibeb.dtos.InstitucionRankingDTO;
 import com.upc.ecovibeb.dtos.RankingDTO;
