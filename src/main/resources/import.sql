@@ -88,3 +88,8 @@ INSERT INTO preguntas_quiz (enunciado, opciona, opcionb, opcionc, opciond, respu
 SELECT setval('roles_id_seq', (SELECT MAX(id) FROM roles));
 SELECT setval('users_id_seq', (SELECT MAX(id) FROM users));
 SELECT setval('actividades_diarias_actividad_id_seq', (SELECT MAX(actividad_id) FROM actividades_diarias));
+SELECT setval('users_id_seq', (SELECT MAX(id) FROM users));
+SELECT setval('roles_id_seq', (SELECT MAX(id) FROM roles));
+SELECT setval('familias_id_seq', (SELECT MAX(id) FROM familias));
+SELECT setval('instituciones_id_seq', (SELECT MAX(id) FROM instituciones));
+SELECT setval('notificaciones_id_seq', (SELECT MAX(id) FROM notificaciones));

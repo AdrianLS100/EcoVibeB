@@ -1,0 +1,40 @@
+version: '3.9'
+
+services:
+  app:
+    image: 'ecovibe-backend:latest'
+    build:
+      context: .
+    container_name: ecovibe-backend
+    ports:
+      - "6868:8080"
+    networks:
+      - my-network-name
+    depends_on:
+      - db
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=72739044
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/EcoVibeB
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=72739044
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=create-drop
+  db:
+    image: postgres:16-alpine
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    restart: always
+    container_name: db
+    networks:
+      - my-network-name
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=72739044
+      - POSTGRES_DB=EcoVibeB
+    ports:
+      - "5433:5432"
+volumes:
+  db_data:
+networks:
+  my-network-name:
+    name: springcloud

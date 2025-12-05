@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api")
-@CrossOrigin(origins = "http://localhost:4200", allowCredentials = "true", exposedHeaders = "Authorization")
+@CrossOrigin(origins = "${ip.frontend}", allowCredentials = "true", exposedHeaders = "Authorization") //para cloud
 public class CalculadoraController {
 
     @Autowired
@@ -22,5 +22,11 @@ public class CalculadoraController {
 
         CalculadoraPersonalDTO response = calculadoraService.calcularHuellaPersonal(request);
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/calculadora/familiar/{familiaId}")
+    @PreAuthorize("hasRole('FAMILIAR') or hasRole('USER')")
+    public ResponseEntity<Double> calcularHuellaFamiliar(@PathVariable Long familiaId) {
+        return ResponseEntity.ok(calculadoraService.calcularHuellaFamiliar(familiaId));
     }
 }

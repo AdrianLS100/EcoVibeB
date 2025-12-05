@@ -47,12 +47,9 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                // --- ¡AQUÍ ESTÁ LA CORRECCIÓN DE CORS! ---
-                // 6. Habilita CORS usando la configuración "corsConfigurationSource" de abajo
-                .cors(Customizer.withDefaults())
+                .cors(Customizer.withDefaults())  // usa el filtro global
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(authz -> authz
-                        // 7. CORRECCIÓN DE RUTA: Tu log llama a "/api/auth/login"
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/ranking").permitAll()
                         .anyRequest().authenticated()
@@ -61,22 +58,5 @@ public class SecurityConfig {
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
-    }
-
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        // Permite peticiones SÓLO desde tu frontend de Angular
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:4200"));
-        // Permite los métodos HTTP que usaremos
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        // Permite todos los headers (incluyendo "Authorization" para el token)
-        configuration.setAllowedHeaders(Arrays.asList("*"));
-        // Permite que el frontend envíe credenciales (cookies, etc.)
-        configuration.setAllowCredentials(true);
-
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration); // Aplica esta regla a TODAS las rutas
-        return source;
     }
 }

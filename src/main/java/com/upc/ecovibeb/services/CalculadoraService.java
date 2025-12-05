@@ -103,4 +103,17 @@ public class CalculadoraService implements ICalculadoraService {
 
     private BigDecimal nz(BigDecimal val) { return (val == null) ? CERO : val; }
     private Integer nz(Integer val) { return (val == null) ? 0 : val; }
+
+    @Override
+    public Double calcularHuellaFamiliar(Long familiaId) {
+        var miembros = userRepo.findAllByFamiliaId(familiaId); // ¡Esto ya lo tenías!
+        BigDecimal sumaTotal = BigDecimal.ZERO;
+
+        for (User miembro : miembros) {
+            if (miembro.getHuellaTotalKgCO2e() != null) {
+                sumaTotal = sumaTotal.add(miembro.getHuellaTotalKgCO2e());
+            }
+        }
+        return sumaTotal.setScale(2, RoundingMode.HALF_UP).doubleValue();
+    }
 }
